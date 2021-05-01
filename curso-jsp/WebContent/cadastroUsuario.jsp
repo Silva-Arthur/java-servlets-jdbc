@@ -22,6 +22,7 @@
 		<h1>Cadastro de usuário</h1>
 		<h3 style="color: orange;">${msg}</h3>
 	</center>
+	<!-- o atributo da tag form, "enctype" permite que o formulário seja capaz de enviar arquivos -->
 	<form action="salvarUsuario" method="post" id="formUser"
 		onsubmit="return validarCampos() ? true : false;" enctype="multipart/form-data">
 		<ul class="form-style-1">
@@ -79,7 +80,14 @@
 
 					<tr>
 						<td>Foto:</td>
-						<td><input type="file" name="foto" value="Foto"></td>
+						<td>
+							<input type="file" name="foto" >						
+						</td>
+					</tr>
+
+					<tr>
+						<td>Currículo:</td>
+						<td><input type="file" name="curriculo" value="${user.curriculoBase64}"></td>
 					</tr>
 
 					<tr>
@@ -101,7 +109,8 @@
 			<caption>Usuários Cadastrados</caption>
 			<tr>
 				<th>Id</th>
-				<th>Login</th>
+				<th>Foto</th>
+				<th>Currículo</th>
 				<th>Nome</th>
 				<th>Fone</th>
 				<th>Excluir</th>
@@ -111,7 +120,26 @@
 			<c:forEach items="${usuarios}" var="user">
 				<tr>
 					<td style="width: 150px;"><c:out value="${user.id}" /></td>
-					<td style="width: 150px;"><c:out value="${user.login}" /></td>
+					<td style="width: 150px;">
+						<c:if test="${user.fotoBase64.isEmpty() == false}">
+							<a href="salvarUsuario?acao=download&tipo=imagem&user=${user.id}">
+								<img alt="imagem" src='<c:out value="${user.tempFotoUser}"></c:out>' width="32" height="32">
+							</a>
+						</c:if>
+						<c:if test="${user.fotoBase64 == null || user.fotoBase64.isEmpty() == true}">
+							<img alt="imagem" src="resources/img/usuario.png" width="32" height="32" onclick="alert('Não possui imagem!')">
+						</c:if>
+					</td>						
+					<td style="width: 150px;">
+						<c:if test="${user.curriculoBase64.isEmpty() == false}">
+							<a href="salvarUsuario?acao=download&tipo=curriculo&user=${user.id}">
+								<img alt="Curriculo" src="resources/img/pdf.png" width="32" height="32"> 
+							</a>
+						</c:if>
+						<c:if test="${user.curriculoBase64 == null || user.curriculoBase64.isEmpty() == true}">
+							<img alt="imagem" src="resources/img/pdf.png" width="32" height="32" onclick="alert('Não possui currículo!')">
+						</c:if>
+					</td>
 					<td><c:out value="${user.nome}" /></td>
 					<td><c:out value="${user.fone}" /></td>
 					<td><a href="salvarUsuario?acao=delete&user=${user.id}"><img

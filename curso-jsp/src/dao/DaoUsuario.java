@@ -20,9 +20,12 @@ public class DaoUsuario {
 
 	public void salvar(BeanCursoJsp usuario) {
 		try {
-			String sql = "insert into usuario (login, senha, nome, fone, cep, rua, bairro, cidade, estado, ibge) "
-					+ "values (?,?,?,?,?,?,?,?,?,?)";
+			String sql = "insert into usuario (login, senha, nome, fone, cep, rua,"
+					+ " bairro, cidade, estado, ibge, fotobase64, contenttype, "
+					+ "curriculobase64, contenttypecurriculo) "
+					+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement insert = connection.prepareStatement(sql);
+			
 			insert.setString(1, usuario.getLogin());
 			insert.setString(2, usuario.getSenha());
 			insert.setString(3, usuario.getNome());
@@ -33,6 +36,11 @@ public class DaoUsuario {
 			insert.setString(8, usuario.getCidade());
 			insert.setString(9, usuario.getEstado());
 			insert.setString(10, usuario.getIbge());
+			insert.setString(11, usuario.getFotoBase64());
+			insert.setString(12, usuario.getContentType());
+			insert.setString(13, usuario.getCurriculoBase64());
+			insert.setString(14, usuario.getContentTypeCurriculo());
+			
 			insert.execute();
 			connection.commit();
 		} catch (SQLException e) {
@@ -66,7 +74,10 @@ public class DaoUsuario {
 			beanCursoJsp.setCidade(resultSet.getString("cidade"));
 			beanCursoJsp.setEstado(resultSet.getString("estado"));
 			beanCursoJsp.setIbge(resultSet.getString("ibge"));
-			
+			beanCursoJsp.setFotoBase64(resultSet.getString("fotobase64"));
+			beanCursoJsp.setContentType(resultSet.getString("contenttype"));
+			beanCursoJsp.setCurriculoBase64(resultSet.getString("curriculobase64"));
+			beanCursoJsp.setContentTypeCurriculo(resultSet.getString("contenttypecurriculo"));
 			listar.add(beanCursoJsp);
 		}
 
@@ -107,7 +118,11 @@ public class DaoUsuario {
 			beanCursoJsp.setCidade(resultSet.getString("cidade"));
 			beanCursoJsp.setEstado(resultSet.getString("estado"));
 			beanCursoJsp.setIbge(resultSet.getString("ibge"));
-
+			beanCursoJsp.setFotoBase64(resultSet.getString("fotobase64"));
+			beanCursoJsp.setContentType(resultSet.getString("contenttype"));
+			beanCursoJsp.setCurriculoBase64(resultSet.getString("curriculobase64"));
+			beanCursoJsp.setContentTypeCurriculo(resultSet.getString("contenttypecurriculo"));
+			
 			return beanCursoJsp;
 		}
 
@@ -126,8 +141,12 @@ public class DaoUsuario {
 
 	public void atualizar(BeanCursoJsp usuario) {
 		try {
-			String sql = "update usuario set login=?, senha=?, nome=?, fone=?, cep=?, rua=?, bairro=?, cidade=?, estado=?, ibge=? where id=" + usuario.getId();
+			String sql = "update usuario set login=?, senha=?, nome=?, fone=?, cep=?, rua=?, bairro=?, cidade=?, estado=?, ibge=?, "
+					+ "fotobase64=?, contenttype=?, curriculobase64=?, contenttypecurriculo=? "
+					+ "where id=" + usuario.getId();
+			
 			PreparedStatement statement = connection.prepareStatement(sql);
+			
 			statement.setString(1, usuario.getLogin());
 			statement.setString(2, usuario.getSenha());
 			statement.setString(3, usuario.getNome());
@@ -138,8 +157,14 @@ public class DaoUsuario {
 			statement.setString(8, usuario.getCidade());
 			statement.setString(9, usuario.getEstado());
 			statement.setString(10, usuario.getIbge());
+			statement.setString(11, usuario.getFotoBase64());
+			statement.setString(12, usuario.getContentType());
+			statement.setString(13, usuario.getCurriculoBase64());
+			statement.setString(14, usuario.getContentTypeCurriculo());
+			
 			statement.executeUpdate();
 			connection.commit();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -179,5 +204,38 @@ public class DaoUsuario {
 		}
 		return false;
 	}
+	
+	public BeanCursoJsp consultarFoto(String id) throws Exception {
+		String sql = "select fotobase64, contenttype  from usuario where id = " + id;
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		if (resultSet.next()) {
+			BeanCursoJsp beanCursoJsp = new BeanCursoJsp();
+			
+			beanCursoJsp.setFotoBase64(resultSet.getString("fotobase64"));
+			beanCursoJsp.setContentType(resultSet.getString("contenttype"));
+			
+			return beanCursoJsp;
+		}
+
+		return null;
+	}
+	
+	public BeanCursoJsp consultarCurriculo(String id) throws Exception {
+		String sql = "select curriculobase64, contenttypecurriculo  from usuario where id = " + id;
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		if (resultSet.next()) {
+			BeanCursoJsp beanCursoJsp = new BeanCursoJsp();
+
+			beanCursoJsp.setCurriculoBase64(resultSet.getString("curriculobase64"));
+			beanCursoJsp.setContentTypeCurriculo(resultSet.getString("contenttypecurriculo"));
+			
+			return beanCursoJsp;
+		}
+
+		return null;
+	}
+
 
 }
