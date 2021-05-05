@@ -16,7 +16,7 @@
 	<a href="index.jsp">Sair</a>
 
 	<center>
-		<h1>Cadastro de telefones</h1>
+		<h1>Cadastro de telefones</h1>   
 		<h3 style="color: orange;">${msg}</h3>
 	</center>
 
