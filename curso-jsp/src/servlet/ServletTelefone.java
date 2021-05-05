@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -62,24 +63,44 @@ public class ServletTelefone extends HttpServlet {
 		BeanCursoJsp usuario = (BeanCursoJsp) request.getSession().getAttribute("userEscolhido");
 		String numero = request.getParameter("numero");
 		String tipo = request.getParameter("tipo");
-
-		Telefones telefone = new Telefones();
-
-		telefone.setNumero(numero);
-		telefone.setTipo(tipo);
-		telefone.setUsuario(usuario.getId());
-
-		daoTelefones.salvar(telefone);
-
-		try {
-			RequestDispatcher view = request.getRequestDispatcher("/telefones.jsp");
-			request.setAttribute("listaItens", daoTelefones.listar(usuario.getId()));
-			request.getSession().setAttribute("userEscolhido", usuario);
-			request.setAttribute("msg", "Salvo com sucesso!");
-			view.forward(request, response);
-		} catch (Exception e) {
-			e.printStackTrace();
+		String msg = "";
+		String acao = request.getParameter("acao");	
+		
+		if (acao != null && acao.equalsIgnoreCase("voltar")) {
+			RequestDispatcher view = request.getRequestDispatcher("/cadastroUsuario.jsp");
+			try {
+				request.setAttribute("usuarios", new DaoUsuario().listar());
+				view.forward(request, response);
+			} catch (ServletException | IOException | SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			if (numero != null && !numero.isEmpty()) {
+				
+				Telefones telefone = new Telefones();
+				
+				telefone.setNumero(numero);
+				telefone.setTipo(tipo);
+				telefone.setUsuario(usuario.getId());
+				
+				msg = "Salva com sucesso!";
+				
+				daoTelefones.salvar(telefone);		
+			} else {
+				msg = "Informe o numero do telefone!";
+			}
+			
+			try {
+				RequestDispatcher view = request.getRequestDispatcher("/telefones.jsp");
+				request.setAttribute("listaItens", daoTelefones.listar(usuario.getId()));
+				request.getSession().setAttribute("userEscolhido", usuario);
+				request.setAttribute("msg", msg);
+				view.forward(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}
+		
 	}
 
 }

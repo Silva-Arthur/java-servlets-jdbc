@@ -20,8 +20,7 @@
 		<h3 style="color: orange;">${msg}</h3>
 	</center>
 
-	<form action="salvarTelefones" method="post" id="formTelefones"
-		onsubmit="return validarCampos() ? true : false;">
+	<form action="salvarTelefones" method="post" id="formTelefones">
 		<ul class="form-style-1">
 			<li>
 				<table>
@@ -38,7 +37,7 @@
 						<td>Número:</td>
 						<td><input type="text" id="numero" name="numero" placeholder="Informe o número"></td>
 						<td>Tipo:</td>
-						<td><select id="tipo" name="tipo">
+						<td><select id="tipo" name="tipo" style="width: 174px;">
 								<option>Casa</option>
 								<option>Contato</option>
 								<option>Celular</option>
@@ -47,7 +46,10 @@
 
 					<tr>
 						<td></td>
-						<td><input type="submit" value="Salvar"></td>
+						<td><input type="submit" value="Salvar">
+						<td>
+						<input type="submit" value="Voltar" onclick="document.getElementById('formTelefones').action = 'salvarTelefones?acao=voltar'">						
+						</td>
 					</tr>
 
 				</table>
